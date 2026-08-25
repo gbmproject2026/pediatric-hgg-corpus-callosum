@@ -1,0 +1,32 @@
+# Raw imaging (licensed, obtain from source; see docs/DATA.md)
+BraTS-PEDs-v1/
+brats_2023_gli/
+data/
+*.nii
+!atlas_jhu/*.nii.gz
+
+# Derived registrations (65 GB-scale; regenerate with scripts/cc_measure_v3.py inputs)
+cc_results*/registrations/
+registrations/
+
+# Patient-level clinical tables (not redistributable; obtain from CBTN)
+cbtn_histologies.tsv
+BraTS-PEDs_metadata.tsv
+*survival*per_patient*.csv
+cc_survival_v3.csv
+
+# Environment
+venv*/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Manuscript is not published to this repository
+manuscript/
+*.docx
+
+# pipeline work directories
+cc_results_peds/
+cc_results_gbm/
+cc_results_seed*/
+data/
