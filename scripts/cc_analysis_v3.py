@@ -92,11 +92,8 @@ def bh_fdr(pv):
 
 
 # Tumor core midline crossing is the pre-specified primary outcome and is
-# reported unadjusted. The remaining outcomes are secondary, so Benjamini-Hochberg
-# is applied across the family. BH rather than Bonferroni because the outcomes are
-# strongly correlated: the compartments are nested (ET within TC within WT) and
-# the sub-regions partition one mask, which violates the independence Bonferroni
-# assumes.
+# reported unadjusted. The remaining outcomes are secondary, so a
+# Benjamini-Hochberg adjusted p-value is reported across the family of 15.
 R["p_bh"] = bh_fdr(R.p.values)
 R.to_csv(cfg.OUTCOMES, index=False)
 
