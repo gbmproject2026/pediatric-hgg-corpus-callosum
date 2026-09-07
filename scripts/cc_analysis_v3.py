@@ -91,14 +91,13 @@ def bh_fdr(pv):
     return out
 
 
-# 15 outcomes are tested. Report Benjamini-Hochberg across the whole family, and
-# Bonferroni within each set of three sub-regions.
+# Tumor core midline crossing is the pre-specified primary outcome and is
+# reported unadjusted. The remaining outcomes are secondary, so Benjamini-Hochberg
+# is applied across the family. BH rather than Bonferroni because the outcomes are
+# strongly correlated: the compartments are nested (ET within TC within WT) and
+# the sub-regions partition one mask, which violates the independence Bonferroni
+# assumes.
 R["p_bh"] = bh_fdr(R.p.values)
-R["p_bonf_subregion"] = np.nan
-for comp in ["WT", "TC", "ET"]:
-    m = R.label.str.match(rf"(Genu|Body|Splenium) involvement, {comp}$")
-    if m.any():
-        R.loc[m, "p_bonf_subregion"] = np.clip(R.loc[m, "p"] * m.sum(), 0, 1)
 R.to_csv(cfg.OUTCOMES, index=False)
 
 

@@ -52,13 +52,20 @@ whole-tumor rows use all 114.
 | Midline crossing, TC | 36 (45.0%) | 215 (17.7%) |
 | Midline crossing, ET | 17 (21.2%) | 212 (17.5%) |
 
-Effect sizes, raw and Benjamini-Hochberg adjusted p-values are in
+Effect sizes with raw and Benjamini-Hochberg adjusted p-values are in
 `results/cc_results_v3.csv`.
 
 ## Results
 
-pHGG n=114 (80 enhancing), adult GBM n=1213. Fisher exact, with
-Benjamini-Hochberg across all 15 outcomes. Five survive correction.
+pHGG n=114 (80 enhancing), adult GBM n=1213. Proportions compared with Fisher
+exact tests.
+
+Tumor core midline crossing is the pre-specified primary outcome and is reported
+unadjusted. The remaining outcomes are secondary, so Benjamini-Hochberg is
+applied across the family. BH rather than Bonferroni because the outcomes are
+strongly correlated: compartments are nested (ET within TC within WT) and the
+three sub-regions partition a single mask, which violates the independence
+Bonferroni assumes. Five outcomes survive correction.
 
 | Finding | pHGG | GBM | OR (95% CI) | P | P (BH) |
 |---|---|---|---|---|---|
