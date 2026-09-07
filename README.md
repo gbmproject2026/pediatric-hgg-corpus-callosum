@@ -58,14 +58,9 @@ Effect sizes with raw and Benjamini-Hochberg adjusted p-values are in
 ## Results
 
 pHGG n=114 (80 enhancing), adult GBM n=1213. Proportions compared with Fisher
-exact tests.
-
-Tumor core midline crossing is the pre-specified primary outcome and is reported
-unadjusted. The remaining outcomes are secondary, so Benjamini-Hochberg is
-applied across the family. BH rather than Bonferroni because the outcomes are
-strongly correlated: compartments are nested (ET within TC within WT) and the
-three sub-regions partition a single mask, which violates the independence
-Bonferroni assumes. Five outcomes survive correction.
+exact tests. Tumor core midline crossing is the pre-specified primary outcome;
+the rest are secondary and carry a Benjamini-Hochberg adjusted p-value across the
+family of 15. Five outcomes survive correction.
 
 | Finding | pHGG | GBM | OR (95% CI) | P | P (BH) |
 |---|---|---|---|---|---|
