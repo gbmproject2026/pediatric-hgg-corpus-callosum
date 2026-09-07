@@ -30,3 +30,7 @@ cc_results_peds/
 cc_results_gbm/
 cc_results_seed*/
 data/
+
+# kept locally, not published
+docs/
+results/

@@ -53,7 +53,7 @@ whole-tumor rows use all 114.
 | Midline crossing, ET | 17 (21.2%) | 212 (17.5%) |
 
 Prevalence ratios with raw and Benjamini-Hochberg adjusted p-values are in
-`results/cc_results_v3.csv`.
+the analysis output of `scripts/cc_analysis_v3.py`.
 
 ## Statistics
 
