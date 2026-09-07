@@ -1,6 +1,10 @@
 # Corpus Callosum Involvement in Pediatric HGG vs Adult GBM
 
-
+Pediatric high-grade gliomas reach the corpus callosum less often than adult
+glioblastomas (71.1% vs 84.1%), which is largely a function of tumor size, yet
+they push solid tumor core across the midline 2.5 times as often (45.0% vs
+17.7%, P < .001). Involvement is posterior in children, in the body and
+splenium, and anterior in adults, in the genu.
 
 ## Method
 
