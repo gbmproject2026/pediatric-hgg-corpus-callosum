@@ -52,7 +52,62 @@ whole-tumor rows use all 114.
 | Midline crossing, TC | 36 (45.0%) | 215 (17.7%) |
 | Midline crossing, ET | 17 (21.2%) | 212 (17.5%) |
 
-Effect sizes and p-values are in `results/cc_results_v3.csv`.
+Effect sizes, raw and Benjamini-Hochberg adjusted p-values are in
+`results/cc_results_v3.csv`.
+
+## Results
+
+pHGG n=114 (80 enhancing), adult GBM n=1213. Fisher exact, with
+Benjamini-Hochberg across all 15 outcomes. Five survive correction.
+
+| Finding | pHGG | GBM | OR (95% CI) | P | P (BH) |
+|---|---|---|---|---|---|
+| **Midline crossing, tumor core** | 45.0% | 17.7% | 3.80 (2.39-6.03) | <.001 | <.001 |
+| **Body involvement, tumor core** | 61.2% | 36.6% | 2.72 (1.71-4.32) | <.001 | <.001 |
+| **Splenium involvement, tumor core** | 48.8% | 33.6% | 1.88 (1.19-2.95) | .007 | .022 |
+| **Genu involvement, whole tumor** | 19.3% | 35.1% | 0.45 (0.28-0.72) | <.001 | .003 |
+| **CC involvement, whole tumor** | 71.1% | 84.1% | 0.46 (0.30-0.71) | <.001 | .004 |
+
+Everything else was non-significant after correction, including all
+enhancement-based comparisons and whole-tumor midline crossing (P = .067).
+
+### What this means
+
+Adult tumors reach the corpus callosum more often overall (84.1% vs 71.1%), which
+is largely size: adult tumors were 2.45 times larger (Mann-Whitney P < .001), and
+the difference does not survive adjustment for tumor volume.
+
+The compartment matters more than the rate. Pediatric tumors put solid tumor core
+across the midline more than twice as often as adult tumors, and this is the
+strongest and most robust result in the analysis.
+
+The two cohorts also involve opposite ends of the structure. Pediatric
+involvement is posterior, in the body and splenium. Adult involvement is
+anterior, in the genu, which matches what the butterfly glioma literature has
+long described. Among cases with any callosal involvement, pediatric tumors
+occupy 10.6% genu / 45.6% body / 43.8% splenium, against 26.0% / 42.5% / 31.5%
+for adults.
+
+Enhancement-based measures show no difference between cohorts at any threshold,
+so post-contrast appearance alone does not distinguish the two patterns.
+
+### Survival
+
+Exploratory, in the 49 patients with outcome data (42 deaths, median OS 527
+days). Callosal involvement was not associated with overall survival for any
+compartment or sub-region, including tumor core midline crossing (HR 1.17,
+95% CI 0.62-2.20, P = .64). Event-free survival showed no association either.
+
+Methylation classification was available for 37 patients, 23 at the DKFZ
+confidence threshold. Survival did not differ between H3 K27-altered tumors and
+other pediatric high-grade gliomas (HR 1.33, P = .63, n=17). No K27-altered tumor
+involved the genu (0/12) compared with 3 of 5 other pediatric tumors (P = .015),
+consistent with the posterior pattern above.
+
+![Survival](figures/supplemental/FigureS3_survival.png)
+
+Per-predictor statistics are in `results/TableS7_survival_os.csv` and
+`TableS7_survival_efs.csv`.
 
 ## Registration to MNI152 space
 

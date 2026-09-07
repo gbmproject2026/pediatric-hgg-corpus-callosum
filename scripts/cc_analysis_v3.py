@@ -77,6 +77,28 @@ for c in ["WT", "TC", "ET"]:
     add(f"Midline crossing, {c} (>{t}/side)", col, pset)
 
 R = pd.DataFrame(rows)
+
+
+def bh_fdr(pv):
+    """Benjamini-Hochberg adjusted p-values."""
+    p = np.asarray(pv, float)
+    n = len(p)
+    order = np.argsort(p)
+    adj = p[order] * n / (np.arange(n) + 1)
+    adj = np.minimum.accumulate(adj[::-1])[::-1]
+    out = np.empty(n)
+    out[order] = np.clip(adj, 0, 1)
+    return out
+
+
+# 15 outcomes are tested. Report Benjamini-Hochberg across the whole family, and
+# Bonferroni within each set of three sub-regions.
+R["p_bh"] = bh_fdr(R.p.values)
+R["p_bonf_subregion"] = np.nan
+for comp in ["WT", "TC", "ET"]:
+    m = R.label.str.match(rf"(Genu|Body|Splenium) involvement, {comp}$")
+    if m.any():
+        R.loc[m, "p_bonf_subregion"] = np.clip(R.loc[m, "p"] * m.sum(), 0, 1)
 R.to_csv(cfg.OUTCOMES, index=False)
 
 
@@ -88,12 +110,14 @@ print("CORRECTED ANALYSIS  (JHU corpus callosum atlas; pHGG ET=1 TC=1+2; GBM ET=
 print(f"pHGG n={len(ped)} (enhancing {len(ped_enh)}, non-enhancing {len(ped)-len(ped_enh)})   GBM n={len(gbm)}")
 print("TC and ET comparisons use the enhancing pHGG subgroup; WT uses the full cohort.")
 print("=" * 108)
-print(f"{'outcome':34} {'pHGG':>16} {'GBM':>17} {'OR (95% CI)':>21} {'p':>7} {'adjOR':>7} {'adj p':>7}")
-print("-" * 108)
+print(f"{'outcome':34} {'pHGG':>16} {'GBM':>17} {'OR (95% CI)':>21} {'p':>7} {'p BH':>7} {'adjOR':>7}")
+print("-" * 112)
 for _, r in R.iterrows():
     star = " *" if r.primary else "  "
     print(f"{r.label:32}{star} {r.pk:>3}/{r.pn:<3} {r.ped:>5.1f}% {r.gk:>5}/{r.gn:<4} {r.gbm:>5.1f}% "
-          f"{r.or_:>7.2f} ({r.lo:.2f}-{r.hi:>5.2f}) {ps(r.p):>7} {r.aor:>7.2f} {ps(r.ap):>7}")
+          f"{r.or_:>7.2f} ({r.lo:.2f}-{r.hi:>5.2f}) {ps(r.p):>7} {ps(r.p_bh):>7} {r.aor:>7.2f}")
+print(f"\np BH = Benjamini-Hochberg across all {len(R)} outcomes. "
+      f"Survives BH at .05: {int((R.p_bh < .05).sum())}/{len(R)}")
 
 u = sps.mannwhitneyu(ped_enh.WT_vol, gbm.WT_vol)
 print(f"\nmedian WT volume: pHGG-all {ped.WT_vol.median():.0f}, pHGG-enh {ped_enh.WT_vol.median():.0f}, "
