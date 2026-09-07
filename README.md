@@ -1,12 +1,6 @@
 # Corpus Callosum Involvement in Pediatric HGG vs Adult GBM
 
-In 114 pediatric high-grade gliomas and 1,213 IDH-wildtype adult glioblastomas,
-corpus callosum involvement by whole tumor was less frequent in pediatric cases
-(71.1% vs 84.1%; prevalence ratio [PR] 0.84, 95% CI 0.75 to 0.95), a difference
-attributable to tumor volume. Tumor core midline crossing was 2.5-fold more
-frequent in pediatric cases (45.0% vs 17.7%; PR 2.54, 95% CI 1.94 to 3.32;
-P < .001), with posterior predominance in pediatric tumors (body and splenium)
-and anterior predominance in adults (genu).
+
 
 ## Method
 
@@ -63,27 +57,23 @@ Prevalence ratios with raw and Benjamini-Hochberg adjusted p-values are in
 
 ## Statistics
 
-Four methods, one per question.
 
-| Method | Question |
+| Methods | Question |
 |---|---|
 | Fisher exact with Benjamini-Hochberg | Do the cohorts differ in the proportion involved, across 15 outcomes |
 | Prevalence ratio with 95% CI | How large is the difference |
 | Mann-Whitney U | Do tumor volumes, and the fraction of corpus callosum involved, differ |
 | Modified Poisson regression | Does the difference survive adjustment for tumor volume |
 
-Prevalence ratios rather than odds ratios because the design is cross-sectional
-and the outcomes are common (18% to 84%), where an odds ratio overstates the
-difference. Modified Poisson is Poisson regression with robust standard errors,
-giving an adjusted prevalence ratio for the same reason.
+ 
 
 Tumor core midline crossing is the pre-specified primary outcome and is reported
 unadjusted; the other 14 carry a Benjamini-Hochberg adjusted p-value.
 
 ## Results
 
-pHGG n=114 (80 enhancing), adult GBM n=1213. Five of 15 outcomes survive
-correction.
+pHGG n=114 (80 enhancing), adult GBM n=1213. 5/15 outcomes survive
+correction:
 
 | Finding | pHGG | GBM | PR (95% CI) | P | P (BH) |
 |---|---|---|---|---|---|
@@ -93,56 +83,31 @@ correction.
 | **CC involvement, WT** | 71.1% | 84.1% | 0.84 (0.75-0.95) | <.001 | .004 |
 | **Splenium involvement, TC** | 48.8% | 33.6% | 1.45 (1.14-1.84) | .007 | .022 |
 
-Everything else was non-significant after correction, including all
-enhancement-based comparisons and whole-tumor midline crossing (P = .067).
+ 
+## Results
+Tumor core midline crossing is 2.5-fold more frequent in pediatric high-grade glioma: (36/80, 45.0%) than in adult glioblastoma (215/1213, 17.7%; PR 2.54, 95% CI 1.94 to 3.32; P < .001, BH-adjusted P < .001). The association persists after adjustment for whole-tumor volume (adjusted PR 4.23, 95% CI 3.20 to 5.60) 
 
-![Prevalence ratios](figures/Figure4_forest.png)
+Sub-regional involvement shows opposing anterior-posterior gradients: Pediatric tumor core involves the body (61.2% vs 36.6%; PR 1.67, 95% CI 1.38 to 2.02; P < .001) and splenium (48.8% vs 33.6%; PR 1.45, 95% CI 1.14 to 1.84; P = .007) more frequently, whereas genu involvement by whole tumor is less frequent (19.3% vs 35.1%; PR 0.56, 95% CI 0.38 to 0.81; P < .001). All three comparisons survive correction. The anterior predominance in the adult cohort is concordant with existing literature on butterfly glioblastomas.
 
-### Corpus callosum fraction involved
+Callosal burden is greater in pediatric cases among those involved: Analyzed as a continuous fraction, pediatric tumor core occupies 8.7% of the corpus callosum versus 5.5% in adults (Mann-Whitney U, P = .0009), indicating a difference in extent as well as in frequency, and independent of any threshold.
 
-Treating involvement as a continuous measure rather than a threshold, and
-restricting to cases with any involvement, pediatric tumor core occupies 8.7% of
-the corpus callosum against 5.5% for adults (Mann-Whitney U, P = .0009). Children
-do not only cross the midline more often, they occupy more of the structure when
-they do.
-
-### What this means
-
-Adult tumors reach the corpus callosum more often overall (84.1% vs 71.1%), which
-is largely size: adult tumors were 2.45 times larger (Mann-Whitney U, P < .001),
-and the difference does not survive adjustment for tumor volume.
-
-The compartment matters more than the rate. Pediatric tumors put solid tumor core
-across the midline 2.5 times as often as adult tumors, and this is the strongest
-and most robust result in the analysis.
-
-The two cohorts also involve opposite ends of the structure. Pediatric
-involvement is posterior, in the body and splenium. Adult involvement is
-anterior, in the genu, which matches what the butterfly glioma literature has
-long described. Among cases with any callosal involvement, pediatric tumors
-occupy 10.6% genu / 45.6% body / 43.8% splenium, against 26.0% / 42.5% / 31.5%
-for adults.
-
-Enhancement-based measures show no difference between cohorts at any threshold,
-so post-contrast appearance alone does not distinguish the two patterns.
+The higher overall involvement in adults is attributable to tumor volume: Adult glioblastomas are 2.45-fold larger (Mann-Whitney U, P < .001), and the whole-tumor difference does not persist after volume adjustment (adjusted PR 1.08, 95% CI 0.97 to 1.20; P = .19).
 
 ### Survival
 
 Exploratory, in the 49 patients with outcome data (42 deaths, median OS 527
-days). Callosal involvement was not associated with overall survival for any
+days). Callosal involvement is not associated with overall survival for any
 compartment or sub-region, including tumor core midline crossing (HR 1.17,
-95% CI 0.62-2.20, P = .64). Event-free survival showed no association either.
+95% CI 0.62-2.20, P = .64). Event-free survival shows no association either.
 
-Methylation classification was available for 37 patients, 23 at the DKFZ
-confidence threshold. Survival did not differ between H3 K27-altered tumors and
+Methylation data available for 37 patients: Survival did not differ between H3 K27-altered tumors and
 other pediatric high-grade gliomas (HR 1.33, P = .63, n=17). No K27-altered tumor
 involved the genu (0/12) compared with 3 of 5 other pediatric tumors (P = .015),
-consistent with the posterior pattern above.
+consistent with the posterior pattern seen in the findings.
 
 ![Survival](figures/supplemental/FigureS3_survival.png)
 
-Per-predictor statistics are in `results/TableS7_survival_os.csv` and
-`TableS7_survival_efs.csv`.
+ 
 
 ## Registration to MNI152 space
 
@@ -165,26 +130,3 @@ Per-predictor statistics are in `results/TableS7_survival_os.csv` and
 ![QC BraTS-GLI-01507-000](qc-samples/QC_BraTS-GLI-01507-000.png)
 
 
-
-## Reproducibility
-
-We registered the pediatric cohort three more times with different random seeds.
-The derived classifications agreed 95% to 99% of the time, with Cohen kappa
-between 0.90 and 0.95, and prevalence never shifted by more than 3.5 percentage
-points.
-
-![Reproducibility](figures/supplemental/FigureS6_reproducibility.png)
-
-
-## References
-
-The corpus callosum masks come from the JHU ICBM-DTI-81 white matter atlas,
-labels 3, 4 and 5, already on the MNI152 grid we register to. Mori et al., *MRI
-Atlas of Human White Matter*, Elsevier 2005, and Hua et al., *NeuroImage*
-2008;39(1):336-347. `atlas_jhu/PROVENANCE.md` records the source and the checks
-we ran on it.
-
-Pediatric imaging and its label convention are described in Kazerooni et al.,
-arXiv:2305.17033 and arXiv:2404.15009, with the DFCI-BCH-BWH-PEDs-HGG subset
-under TCIA doi:10.7937/v8h6-bg25. Adult imaging is the BraTS 2023 adult glioma
-challenge set. Histologies come from the Children's Brain Tumor Network.
