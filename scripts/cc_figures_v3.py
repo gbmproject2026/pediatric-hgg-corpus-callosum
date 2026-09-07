@@ -18,42 +18,47 @@ ax = fig.add_subplot(gs[0, 0])
 y = np.arange(len(R))[::-1].astype(float)
 for i, r in R.iterrows():
     sig = r.p < .05
-    col = PED if (sig and r.or_ > 1) else (GBM_ if (sig and r.or_ < 1) else GREY)
-    ax.plot([r.lo, r.hi], [y[i]]*2, color=col, lw=2.7, solid_capstyle="round")
-    ax.plot(r.or_, y[i], "o", color=col, ms=8.5, zorder=3,
+    col = PED if (sig and r.pr > 1) else (GBM_ if (sig and r.pr < 1) else GREY)
+    ax.plot([r.pr_lo, r.pr_hi], [y[i]]*2, color=col, lw=2.7, solid_capstyle="round")
+    ax.plot(r.pr, y[i], "o", color=col, ms=8.5, zorder=3,
             mec="black" if r.primary else col, mew=1.7 if r.primary else 0)
 ax.axvline(1, color="black", ls=":", lw=1.5)
 ax.set_yticks(y); ax.set_yticklabels([r.label + ("  ★" if r.primary else "") for _, r in R.iterrows()], fontsize=9.5)
-ax.set_xscale("log"); ax.set_xlim(.16, 60)
-ax.set_xlabel("Unadjusted odds ratio, pediatric HGG vs adult GBM (log scale)", fontsize=10.5)
+ax.set_xscale("log"); ax.set_xlim(.3, 12)
+ax.set_xlabel("Prevalence ratio, pediatric HGG vs adult GBM (log scale)", fontsize=10.5)
 for i, r in R.iterrows():
-    ax.text(54, y[i], f"{r.ped:.1f}% vs {r.gbm:.1f}%   {ps(r.p)}", fontsize=8.2, va="center", ha="right",
+    ax.text(11.5, y[i], f"{r.ped:.1f}% vs {r.gbm:.1f}%   {ps(r.p)}", fontsize=8.2, va="center", ha="right",
             color="#222" if r.p < .05 else "#8a8a8a")
 ax.grid(alpha=.22, axis="x")
-ax.text(.20, len(R)-.3, "favors adult GBM", fontsize=8.5, color=GBM_, style="italic")
-ax.text(6.5, len(R)-.3, "favors pediatric HGG", fontsize=8.5, color=PED, style="italic")
+ax.text(.33, -0.95, "more common in adult GBM", fontsize=8.5, color=GBM_, style="italic")
+ax.text(2.6, -0.95, "more common in pediatric HGG", fontsize=8.5, color=PED, style="italic")
 ax.set_title("Corpus callosum involvement and midline crossing\n"
              "JHU ICBM-DTI-81 atlas; pHGG n=114 (80 enhancing) vs adult GBM n=1213", fontsize=12)
 ax2 = fig.add_subplot(gs[0, 1])
 sel = R[R.label.isin(["CC involvement, TC", "Midline crossing, TC (>20/side)"])].reset_index(drop=True)
 yy = [1., 0.]
 for k, r in sel.iterrows():
-    ax2.plot([r.lo, r.hi], [yy[k]+.13]*2, color=GREY, lw=2.6, solid_capstyle="round")
-    ax2.plot(r.or_, yy[k]+.13, "o", color=GREY, ms=8)
-    ax2.plot([r.alo, r.ahi], [yy[k]-.13]*2, color="#7b2d26", lw=2.6, solid_capstyle="round")
-    ax2.plot(r.aor, yy[k]-.13, "s", color="#7b2d26", ms=8)
-    ax2.text(r.hi*1.1, yy[k]+.13, f"{r.or_:.2f}", fontsize=8, va="center", color="#666")
-    ax2.text(r.ahi*1.1, yy[k]-.13, f"{r.aor:.2f}", fontsize=8, va="center", color="#7b2d26")
+    ax2.plot([r.pr_lo, r.pr_hi], [yy[k]+.13]*2, color=GREY, lw=2.6, solid_capstyle="round")
+    ax2.plot(r.pr, yy[k]+.13, "o", color=GREY, ms=8)
+    ax2.plot([r.pr_adj_lo, r.pr_adj_hi], [yy[k]-.13]*2, color="#7b2d26", lw=2.6, solid_capstyle="round")
+    ax2.plot(r.pr_adj, yy[k]-.13, "s", color="#7b2d26", ms=8)
+    ax2.text(r.pr_hi*1.1, yy[k]+.13, f"{r.pr:.2f}", fontsize=8, va="center", color="#666")
+    ax2.text(r.pr_adj_hi*1.1, yy[k]-.13, f"{r.pr_adj:.2f}", fontsize=8, va="center", color="#7b2d26")
 ax2.axvline(1, color="black", ls=":", lw=1.4)
 ax2.set_yticks(yy); ax2.set_yticklabels(["CC involvement\ntumor core", "Midline crossing\ntumor core"], fontsize=9)
-ax2.set_xscale("log"); ax2.set_xlim(.7, 40); ax2.set_ylim(-.6, 1.6)
-ax2.set_xlabel("Odds ratio", fontsize=9.5); ax2.grid(alpha=.22, axis="x")
+ax2.set_xscale("log"); ax2.set_xlim(.8, 8); ax2.set_ylim(-.6, 1.6)
+from matplotlib.ticker import FixedLocator, NullLocator, FixedFormatter
+ax2.xaxis.set_major_locator(FixedLocator([1, 2, 4, 8]))
+ax2.xaxis.set_major_formatter(FixedFormatter(["1", "2", "4", "8"]))
+ax2.xaxis.set_minor_locator(NullLocator())
+ax2.set_xlabel("Prevalence ratio", fontsize=9.5); ax2.grid(alpha=.22, axis="x")
 ax2.set_title("Sensitivity analysis\nvolume adjustment", fontsize=10.5)
 ax2.legend(handles=[Line2D([], [], color=GREY, marker="o", lw=2.4, label="unadjusted"),
-                    Line2D([], [], color="#7b2d26", marker="s", lw=2.4, label="adj. log$_{10}$ volume")],
+                    Line2D([], [], color="#7b2d26", marker="s", lw=2.4, label="volume-adjusted")],
            loc="upper right", fontsize=8, framealpha=.95)
-fig.text(.685, .045, "Adult GBM tumors were 2.45x larger (p<.001). Volume plausibly mediates\n"
-                     "the tumor-type/callosal relationship, so unadjusted estimates are primary.",
+fig.text(.685, .045, "Adult GBM tumors were 2.45x larger (p<.001). Volume plausibly mediates the\n"
+                     "tumor-type/callosal relationship, so unadjusted estimates are primary.\n"
+                     "Adjusted values are modified Poisson prevalence ratios.",
          fontsize=7.4, color="#555", va="top")
 fig.savefig(OUT/"Figure4_forest.png", dpi=200, bbox_inches="tight", facecolor="white"); plt.close(fig)
 
@@ -83,13 +88,10 @@ for ax, comp, pset, ttl in [(axes[0], "WT", ped, "Whole tumor (all cases)"),
 fig.suptitle("Subregional corpus callosum involvement, anterior to posterior", fontsize=13, y=1.0)
 fig.tight_layout(); fig.savefig(OUT/"Figure3_subregions.png", dpi=200, bbox_inches="tight", facecolor="white"); plt.close(fig)
 
-# FIG C: prevalence with Wilson CIs
+# FIG C: prevalence by compartment
 sel = R[R.label.str.contains("CC involvement|Midline crossing")].reset_index(drop=True)
 fig, ax = plt.subplots(figsize=(11.5, 5.8))
 x = np.arange(len(sel)); w=.35
-for i, r in sel.iterrows():
-    ax.plot([x[i]-w/2]*2, [r.ped_lo, r.ped_hi], color="black", lw=1.3, zorder=4)
-    ax.plot([x[i]+w/2]*2, [r.gbm_lo, r.gbm_hi], color="black", lw=1.3, zorder=4)
 ax.bar(x-w/2, sel.ped, w, color=PED, label="pediatric HGG", zorder=3)
 ax.bar(x+w/2, sel.gbm, w, color=GBM_, label="adult GBM", zorder=3)
 for i, r in sel.iterrows():
@@ -100,7 +102,7 @@ for i, r in sel.iterrows():
 ax.set_xticks(x); ax.set_xticklabels([s.replace(", ","\n").replace(" (>20/side)","").replace(" (>5/side)","") for s in sel.label], fontsize=8.6)
 ax.set_ylabel("% of cohort", fontsize=10.5); ax.set_ylim(-16, 100); ax.axhline(0, color="black", lw=.8)
 ax.set_title("Corpus callosum involvement and midline crossing by compartment\n"
-             "error bars 95% Wilson CI; counts below axis (pHGG / GBM)", fontsize=11.5)
+             "counts below axis (pHGG / GBM)", fontsize=11.5)
 ax.legend(fontsize=9); ax.grid(alpha=.22, axis="y")
 fig.tight_layout(); fig.savefig(OUT/"Figure2_prevalence.png", dpi=200, bbox_inches="tight", facecolor="white"); plt.close(fig)
 print("wrote Figure2_prevalence.png, Figure3_subregions.png, Figure4_forest.png ->", OUT)

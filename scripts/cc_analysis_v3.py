@@ -18,24 +18,31 @@ for x in (ped, gbm, ped_enh):
 CROSS_THR = {"WT": 20, "TC": 20, "ET": 5}
 
 
-def wilson(k, n, z=1.96):
-    if n == 0: return (0., 0.)
-    p = k / n; den = 1 + z*z/n
-    c = (p + z*z/(2*n))/den
-    h = z*math.sqrt(p*(1-p)/n + z*z/(4*n*n))/den
-    return (max(0., c-h)*100, min(1., c+h)*100)
+def prev_ratio(k1, n1, k0, n0):
+    """Prevalence ratio with 95% CI by the Katz log method.
 
-
-def crude(a, b, c, dd):
-    a_, b_, c_, d_ = a+.5, b+.5, c+.5, dd+.5
-    l = math.log(a_*d_/(b_*c_)); se = math.sqrt(1/a_+1/b_+1/c_+1/d_)
-    return math.exp(l), math.exp(l-1.96*se), math.exp(l+1.96*se)
+    The design is cross-sectional and the outcomes are common (18% to 84%), so a
+    prevalence ratio is directly interpretable. An odds ratio would overstate the
+    difference substantially at these prevalences.
+    """
+    a, b = k1 + .5, k0 + .5           # continuity correction for empty cells
+    p1, p0 = a / (n1 + 1), b / (n0 + 1)
+    pr = p1 / p0
+    se = math.sqrt((1 - p1) / a + (1 - p0) / b)
+    return pr, pr * math.exp(-1.96 * se), pr * math.exp(1.96 * se)
 
 
 def adj(pset, gset, col):
+    """Volume-adjusted prevalence ratio by modified Poisson regression.
+
+    Poisson regression with robust (HC0) standard errors, which is the standard
+    way to obtain an adjusted prevalence ratio for a common binary outcome.
+    Logistic regression would return an odds ratio and overstate the effect.
+    """
     f = pd.concat([pset.assign(g=1), gset.assign(g=0)])
     f = f[f.WT_vol > 0]
-    m = sm.Logit(f[col], sm.add_constant(f[["g", "log_wt"]])).fit(disp=False)
+    m = sm.GLM(f[col].astype(int), sm.add_constant(f[["g", "log_wt"]]),
+               family=sm.families.Poisson()).fit(cov_type="HC0")
     lo, hi = m.conf_int().loc["g"]
     return math.exp(m.params["g"]), math.exp(lo), math.exp(hi), float(m.pvalues["g"])
 
@@ -49,13 +56,12 @@ def add(label, col, pset, primary=False):
     a, na = int(p_[col].sum()), len(p_)
     b, nb = int(g_[col].sum()), len(g_)
     _, p = sps.fisher_exact([[a, na-a], [b, nb-b]])
-    o, lo, hi = crude(a, na-a, b, nb-b)
+    o, lo, hi = prev_ratio(a, na, b, nb)
     ao, alo, ahi, ap = adj(p_, g_, col)
-    pl, ph = wilson(a, na); gl, gh = wilson(b, nb)
     rows.append(dict(label=label, primary=primary, pk=a, pn=na, ped=100*a/na,
-                     ped_lo=pl, ped_hi=ph, gk=b, gn=nb, gbm=100*b/nb,
-                     gbm_lo=gl, gbm_hi=gh, p=p, or_=o, lo=lo, hi=hi,
-                     aor=ao, alo=alo, ahi=ahi, ap=ap))
+                     gk=b, gn=nb, gbm=100*b/nb, p=p,
+                     pr=o, pr_lo=lo, pr_hi=hi,
+                     pr_adj=ao, pr_adj_lo=alo, pr_adj_hi=ahi, p_adj=ap))
 
 
 for r in ["whole", "genu", "body", "splenium"]:
@@ -106,14 +112,28 @@ print("CORRECTED ANALYSIS  (JHU corpus callosum atlas; pHGG ET=1 TC=1+2; GBM ET=
 print(f"pHGG n={len(ped)} (enhancing {len(ped_enh)}, non-enhancing {len(ped)-len(ped_enh)})   GBM n={len(gbm)}")
 print("TC and ET comparisons use the enhancing pHGG subgroup; WT uses the full cohort.")
 print("=" * 108)
-print(f"{'outcome':34} {'pHGG':>16} {'GBM':>17} {'OR (95% CI)':>21} {'p':>7} {'p BH':>7} {'adjOR':>7}")
+print(f"{'outcome':34} {'pHGG':>16} {'GBM':>17} {'PR (95% CI)':>21} {'p':>7} {'p BH':>7} {'adjPR':>7}")
 print("-" * 112)
 for _, r in R.iterrows():
     star = " *" if r.primary else "  "
     print(f"{r.label:32}{star} {r.pk:>3}/{r.pn:<3} {r.ped:>5.1f}% {r.gk:>5}/{r.gn:<4} {r.gbm:>5.1f}% "
-          f"{r.or_:>7.2f} ({r.lo:.2f}-{r.hi:>5.2f}) {ps(r.p):>7} {ps(r.p_bh):>7} {r.aor:>7.2f}")
+          f"{r.pr:>7.2f} ({r.pr_lo:.2f}-{r.pr_hi:>5.2f}) {ps(r.p):>7} {ps(r.p_bh):>7} {r.pr_adj:>7.2f}")
 print(f"\np BH = Benjamini-Hochberg across all {len(R)} outcomes. "
       f"Survives BH at .05: {int((R.p_bh < .05).sum())}/{len(R)}")
+
+# Continuous outcome: fraction of the corpus callosum involved. Avoids the
+# arbitrary "any voxel" threshold and retains magnitude information.
+CC_VOX = 35291
+print(f"\n{'='*108}\nCONTINUOUS: fraction of the corpus callosum involved (Mann-Whitney U)\n{'='*108}")
+print(f"{'measure':26} {'pHGG median':>13} {'GBM median':>12} {'p':>10}   restricted to involved cases")
+for lab, col, pset in [("whole tumor", "whole_WT_n", ped), ("tumor core", "whole_TC_n", ped_enh)]:
+    a = pset[col] / CC_VOX * 100
+    b = gbm[col] / CC_VOX * 100
+    uu = sps.mannwhitneyu(a, b)
+    ai, bi = a[a > 0], b[b > 0]
+    ui = sps.mannwhitneyu(ai, bi)
+    print(f"{lab:26} {a.median():12.1f}% {b.median():11.1f}% {ps(uu.pvalue):>10}   "
+          f"{ai.median():.1f}% vs {bi.median():.1f}%, p={ps(ui.pvalue)}")
 
 u = sps.mannwhitneyu(ped_enh.WT_vol, gbm.WT_vol)
 print(f"\nmedian WT volume: pHGG-all {ped.WT_vol.median():.0f}, pHGG-enh {ped_enh.WT_vol.median():.0f}, "

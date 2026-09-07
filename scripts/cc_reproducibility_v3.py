@@ -3,13 +3,11 @@ cc_reproducibility_v3.py
 Registration reproducibility across independent ANTs random seeds, measured on
 the JHU atlas with corrected labels.
 
-Reports
-  1. Dice between the reference (seed 42) warped segmentation and each repeat,
-     per compartment, so registration stability is quantified rather than assumed
-  2. Dice of the callosal intersection itself, which is what the study measures
-  3. Agreement of the derived binary outcomes (involvement, midline crossing)
-     across seeds, including Cohen kappa and per-seed prevalence
-  4. Consensus estimates using majority vote across seeds
+Reports agreement of the derived binary outcomes (involvement and midline
+crossing) across registration seeds, as per-seed prevalence, raw agreement and
+Cohen kappa. Kappa is the relevant measure because every reported outcome is a
+binary classification. Per-case Dice is retained in the output table for
+reference but is not a reported result.
 
 Run after cc_multiseed_v3.py completes.
 """
@@ -72,7 +70,7 @@ n_full = D[[f"dice_WT_s{s}" for s in SEEDS]].notna().all(axis=1).sum()
 print(f"cases with reference + all {len(SEEDS)} repeat registrations: {n_full}/{len(D)}")
 
 print("\n" + "="*86)
-print("REGISTRATION REPRODUCIBILITY: Dice vs reference registration (seed 42)")
+print("REGISTRATION REPRODUCIBILITY (supplementary: Dice vs reference registration)")
 print("="*86)
 print(f"{'compartment':12} {'scope':16} {'median':>8} {'IQR':>18} {'min':>8} {'n':>6}")
 summ = []

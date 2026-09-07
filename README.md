@@ -52,36 +52,63 @@ whole-tumor rows use all 114.
 | Midline crossing, TC | 36 (45.0%) | 215 (17.7%) |
 | Midline crossing, ET | 17 (21.2%) | 212 (17.5%) |
 
-Effect sizes with raw and Benjamini-Hochberg adjusted p-values are in
+Prevalence ratios with raw and Benjamini-Hochberg adjusted p-values are in
 `results/cc_results_v3.csv`.
+
+## Statistics
+
+Four methods, one per question.
+
+| Method | Question |
+|---|---|
+| Fisher exact with Benjamini-Hochberg | Do the cohorts differ in the proportion involved, across 15 outcomes |
+| Prevalence ratio with 95% CI | How large is the difference |
+| Mann-Whitney U | Do tumor volumes, and the fraction of corpus callosum involved, differ |
+| Modified Poisson regression | Does the difference survive adjustment for tumor volume |
+
+Prevalence ratios rather than odds ratios because the design is cross-sectional
+and the outcomes are common (18% to 84%), where an odds ratio overstates the
+difference. Modified Poisson is Poisson regression with robust standard errors,
+giving an adjusted prevalence ratio for the same reason.
+
+Tumor core midline crossing is the pre-specified primary outcome and is reported
+unadjusted; the other 14 carry a Benjamini-Hochberg adjusted p-value.
 
 ## Results
 
-pHGG n=114 (80 enhancing), adult GBM n=1213. Proportions compared with Fisher
-exact tests. Tumor core midline crossing is the pre-specified primary outcome;
-the rest are secondary and carry a Benjamini-Hochberg adjusted p-value across the
-family of 15. Five outcomes survive correction.
+pHGG n=114 (80 enhancing), adult GBM n=1213. Five of 15 outcomes survive
+correction.
 
-| Finding | pHGG | GBM | OR (95% CI) | P | P (BH) |
+| Finding | pHGG | GBM | PR (95% CI) | P | P (BH) |
 |---|---|---|---|---|---|
-| **Midline crossing, tumor core** | 45.0% | 17.7% | 3.80 (2.39-6.03) | <.001 | <.001 |
-| **Body involvement, tumor core** | 61.2% | 36.6% | 2.72 (1.71-4.32) | <.001 | <.001 |
-| **Splenium involvement, tumor core** | 48.8% | 33.6% | 1.88 (1.19-2.95) | .007 | .022 |
-| **Genu involvement, whole tumor** | 19.3% | 35.1% | 0.45 (0.28-0.72) | <.001 | .003 |
-| **CC involvement, whole tumor** | 71.1% | 84.1% | 0.46 (0.30-0.71) | <.001 | .004 |
+| **Midline crossing, TC (>20/side)** | 45.0% | 17.7% | 2.54 (1.94-3.32) | <.001 | <.001 |
+| **Body involvement, TC** | 61.2% | 36.6% | 1.67 (1.38-2.02) | <.001 | <.001 |
+| **Genu involvement, WT** | 19.3% | 35.1% | 0.56 (0.38-0.81) | <.001 | .003 |
+| **CC involvement, WT** | 71.1% | 84.1% | 0.84 (0.75-0.95) | <.001 | .004 |
+| **Splenium involvement, TC** | 48.8% | 33.6% | 1.45 (1.14-1.84) | .007 | .022 |
 
 Everything else was non-significant after correction, including all
 enhancement-based comparisons and whole-tumor midline crossing (P = .067).
 
+![Prevalence ratios](figures/Figure4_forest.png)
+
+### Corpus callosum fraction involved
+
+Treating involvement as a continuous measure rather than a threshold, and
+restricting to cases with any involvement, pediatric tumor core occupies 8.7% of
+the corpus callosum against 5.5% for adults (Mann-Whitney U, P = .0009). Children
+do not only cross the midline more often, they occupy more of the structure when
+they do.
+
 ### What this means
 
 Adult tumors reach the corpus callosum more often overall (84.1% vs 71.1%), which
-is largely size: adult tumors were 2.45 times larger (Mann-Whitney P < .001), and
-the difference does not survive adjustment for tumor volume.
+is largely size: adult tumors were 2.45 times larger (Mann-Whitney U, P < .001),
+and the difference does not survive adjustment for tumor volume.
 
 The compartment matters more than the rate. Pediatric tumors put solid tumor core
-across the midline more than twice as often as adult tumors, and this is the
-strongest and most robust result in the analysis.
+across the midline 2.5 times as often as adult tumors, and this is the strongest
+and most robust result in the analysis.
 
 The two cohorts also involve opposite ends of the structure. Pediatric
 involvement is posterior, in the body and splenium. Adult involvement is
@@ -138,7 +165,9 @@ Per-predictor statistics are in `results/TableS7_survival_os.csv` and
 We registered the pediatric cohort three more times with different random seeds.
 The derived classifications agreed 95% to 99% of the time, with Cohen kappa
 between 0.90 and 0.95, and prevalence never shifted by more than 3.5 percentage
-points. Median whole-tumor Dice against the reference run was 0.90.
+points.
+
+![Reproducibility](figures/supplemental/FigureS6_reproducibility.png)
 
 
 ## References
